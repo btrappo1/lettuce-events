@@ -1,7 +1,11 @@
 # **Lettuce Event-Driven System**
+
+<img src="images/diagram.png" alt="Diagram" align="right" style="width: 400px"/>
+
 A simple event-driven system using **RabbitMQ** as a message broker. It mimics **Blinker-like signals** but allows **cross-service communication** using a publish-subscribe model.
 
 > ⚠️ **Disclaimer**: This project is not intended for production use. Its primary purpose is to demonstrate an advanced usage of the Pika library and RabbitMQ to build an event-driven system. It is a learning and experimentation project, showcasing cross-service communication patterns via publish-subscribe messaging. 😉👍
+
 
 ## **🚀 Getting Started**
 
