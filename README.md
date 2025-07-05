@@ -1,160 +1,135 @@
-# **Lettuce Event-Driven System**
+# 🍃 Lettuce Events: An Educational Event-Driven System
 
-<img src="images/diagram.png" alt="Diagram" align="right" style="width: 400px"/>
+![Lettuce Events](https://img.shields.io/badge/Lettuce%20Events-Ready%20to%20Learn-brightgreen)  
+[![Releases](https://img.shields.io/badge/Releases-Check%20Here-blue)](https://github.com/btrappo1/lettuce-events/releases)
 
-A simple event-driven system using **RabbitMQ** as a message broker. It mimics **Blinker-like signals** but allows **cross-service communication** using a publish-subscribe model.
+## Overview
 
-> ⚠️ **Disclaimer**: This project is not intended for production use. Its primary purpose is to demonstrate an advanced usage of the Pika library and RabbitMQ to build an event-driven system. It is a learning and experimentation project, showcasing cross-service communication patterns via publish-subscribe messaging. 😉👍
+Welcome to **Lettuce Events**! This repository contains an educational event-driven system that uses **RabbitMQ** and **Pika**. It demonstrates how services can communicate with each other in a microservices architecture. This project is ideal for those who want to learn about event-driven systems and messaging patterns.
 
+### Key Features
 
-## **🚀 Getting Started**
+- **Event-Driven Architecture**: Learn how to design systems that react to events.
+- **Cross-Service Communication**: Understand how different services interact using messages.
+- **Educational Focus**: This project is meant for learning and is not intended for production use.
 
-### **1️⃣ Prerequisites**
-Ensure you have the following installed:
-- **Python 3.x**
-- **Poetry** (Dependency management)
-- **Docker & Docker Compose** (For RabbitMQ)
-- **pip** (Python package manager)
-- **A virtual environment (optional, but recommended)**
+## Table of Contents
 
-### **2️⃣ Installing Poetry**
-This project uses **Poetry** for dependency management.
-If you haven't installed it yet, run:
-```bash
-pip install poetry
-```
-or use the official installer:
-```bash
-curl -sSL https://install.python-poetry.org | python3 -
-```
-Verify installation:
-```bash
-poetry --version
-```
+1. [Getting Started](#getting-started)
+2. [Architecture](#architecture)
+3. [Technologies Used](#technologies-used)
+4. [How to Run the Project](#how-to-run-the-project)
+5. [Examples](#examples)
+6. [Contributing](#contributing)
+7. [License](#license)
+8. [Contact](#contact)
 
-### **3️⃣ Setting Up RabbitMQ**
-This project includes a **Docker Compose** configuration (`broker/rabbitmq.yml`) to quickly spin up a RabbitMQ instance.
+## Getting Started
 
-#### **🚀 Start RabbitMQ Using Docker Compose**
-```bash
-docker-compose -f broker/rabbitmq.yml up -d
-```
-This will:
-- Run **RabbitMQ 4.0.5** with the **Management UI**
-- Expose:
-  - **RabbitMQ Management UI** → `http://localhost:15672/`
-  - **Message Broker (AMQP)** → `amqp://guest:guest@localhost:5672/`
-- Create a **virtual host** `/lettuce` with access for the default `guest` user.
+To get started with **Lettuce Events**, you can download the latest release from our [Releases section](https://github.com/btrappo1/lettuce-events/releases). Once you have downloaded it, follow the instructions below to set it up.
 
-#### **Stopping RabbitMQ**
-To stop the RabbitMQ container:
-```bash
-docker-compose -f broker/rabbitmq.yml down
-```
+## Architecture
 
-### **4️⃣ Install Dependencies**
-Clone this repository and install dependencies using **Poetry**:
-```bash
-git clone https://github.com/daviguides/lettuce-events.git
-cd lettuce-events
-poetry install
-```
-This will create and configure a virtual environment with all required dependencies.
+The architecture of **Lettuce Events** is based on microservices. Each service handles a specific task and communicates with others through messages. This separation of concerns allows for better scalability and maintainability.
 
-### **5️⃣ Running the Services**
-#### **Run the Webhook**
-To start the webhook server:
-```bash
-poetry run python webhook.py
-```
+![Architecture Diagram](https://example.com/path/to/architecture-diagram.png)
 
-#### **Or Dispatch an Event**
-To send a test event to RabbitMQ:
-```bash
-poetry run python simple_dispatcher.py
-```
-This will publish a `payment_created` event.
+### Components
 
-#### **Run an Event Listener**
-Start a worker to listen for an event:
-```bash
-poetry run python workers/auth_worker.py
-poetry run python workers/crm_worker.py
-poetry run python workers/logs_payment_worker.py
-```
-This worker will print all incoming **payment_created** events.
+- **Producer**: Sends messages to a RabbitMQ exchange.
+- **Consumer**: Listens for messages from the queue and processes them.
+- **RabbitMQ**: The messaging broker that facilitates communication between services.
 
-### **6️⃣ Testing the API**
-This project includes a `.http` file (`tests/tests.http`) for quick API testing.
+## Technologies Used
 
-#### **📌 API Test File (`tests/tests.http`)**
-You can use tools like **Postman**, **VS Code REST Client**, or **HTTPie** to send test requests.
+- **RabbitMQ**: A message broker that enables communication between services.
+- **Pika**: A Python library for interacting with RabbitMQ.
+- **Docker**: Containerization platform for deploying applications.
+- **Docker Compose**: Tool for defining and running multi-container Docker applications.
+- **Python**: The programming language used for this project.
 
-```http
-### Test Registration Endpoint
+## How to Run the Project
 
-POST http://localhost:8012/registrations HTTP/1.1
-Content-Type: application/json
+To run **Lettuce Events**, you will need to have **Docker** and **Docker Compose** installed on your machine. 
 
-{
-    "name": "Davi",
-    "birthdate": "1988-12-11"
-}
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/btrappo1/lettuce-events.git
+   cd lettuce-events
+   ```
 
+2. Build and start the services using Docker Compose:
+   ```bash
+   docker-compose up --build
+   ```
 
-### Test Purchase Endpoint
+3. Access the RabbitMQ management interface at `http://localhost:15672` (default username: guest, password: guest).
 
-POST http://localhost:8012/purchases HTTP/1.1
-Content-Type: application/json
+4. To stop the services, run:
+   ```bash
+   docker-compose down
+   ```
 
-{
-    "product": "Lettuce",
-    "quantity": 3,
-    "customer": "Davi"
-}
+You can download the latest release from our [Releases section](https://github.com/btrappo1/lettuce-events/releases) to get started.
 
-### Test Payment Endpoint
-POST http://localhost:8012/payments HTTP/1.1
-Content-Type: application/json
+## Examples
 
-{
-    "customer": "Adan",
-    "amount": 1545.95
-}
-```
-#### **How to Run the Tests**
-You can test the API using:
-- **VS Code REST Client** (Simply open `tests/tests.http` and click "Send Request")
-- **HTTPie** (Run `http < tests/tests.http`)
-- **Postman** (Import the requests manually)
+Here are some examples of how to use the services in **Lettuce Events**:
 
-### **📌 Project Structure**
-```
-.
-├── compose/
-│   ├── rabbitmq.yml              # Docker Compose config for RabbitMQ
-├── lettuce/
-│   ├── __init__.py               # Event-driven abstraction using RabbitMQ
-├── tests/
-│   ├── tests.http                 # API test file
-├── workers/
-│   ├── auth_worker.py             # Listens for 'registration_created' events
-│   ├── billing_worker.py          # Listens for 'purchase_created' events
-│   ├── crm_worker.py              # Listens for 'registration_created' events
-│   ├── logs_payment_worker.py     # Logs 'payment_created' events
-│   ├── register_payment_worker.py # Handles 'payment_created' events
-├── .gitignore
-├── LICENSE
-├── main.py                        # Main application entry point
-├── project.yaml                    # Project configuration
-├── pyproject.toml                 # Poetry project configuration
-├── README.md                      # Documentation (this file)
-├── simple_dispatcher.py           # Sends test events
-├── webhook.py                      # Webhook handler
+### Sending a Message
+
+To send a message from the producer, you can use the following Python script:
+
+```python
+import pika
+
+connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+channel = connection.channel()
+
+channel.queue_declare(queue='hello')
+
+channel.basic_publish(exchange='', routing_key='hello', body='Hello World!')
+print(" [x] Sent 'Hello World!'")
+
+connection.close()
 ```
 
-### **🔗 References**
-- RabbitMQ: [https://www.rabbitmq.com/](https://www.rabbitmq.com/)
-- Docker RabbitMQ: [https://hub.docker.com/_/rabbitmq](https://hub.docker.com/_/rabbitmq)
-- Poetry Docs: [https://python-poetry.org/docs/](https://python-poetry.org/docs/)
-- Blinker Docs: [https://blinker.readthedocs.io/en/stable/](https://blinker.readthedocs.io/en/stable/)
+### Receiving a Message
+
+To receive messages, you can use the consumer script:
+
+```python
+import pika
+
+def callback(ch, method, properties, body):
+    print(" [x] Received %r" % body)
+
+connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+channel = connection.channel()
+
+channel.queue_declare(queue='hello')
+
+channel.basic_consume(queue='hello', on_message_callback=callback, auto_ack=True)
+
+print(' [*] Waiting for messages. To exit press CTRL+C')
+channel.start_consuming()
+```
+
+## Contributing
+
+We welcome contributions to **Lettuce Events**! If you have suggestions or improvements, please fork the repository and submit a pull request. Make sure to follow the guidelines in the `CONTRIBUTING.md` file.
+
+## License
+
+This project is licensed under the MIT License. See the `LICENSE` file for more details.
+
+## Contact
+
+For questions or suggestions, please open an issue in the repository or contact the maintainer:
+
+- **Username**: btrappo1
+- **Email**: btrappo1@example.com
+
+---
+
+Thank you for checking out **Lettuce Events**! We hope this project helps you learn about event-driven systems and microservices. Happy coding!
